@@ -7,6 +7,7 @@
 -- ────────────────────────────────────────────────────────────
 --  0. LIMPIEZA (útil para re-ejecutar en desarrollo)
 -- ────────────────────────────────────────────────────────────
+DROP TABLE IF EXISTS usuarios          CASCADE;
 DROP TABLE IF EXISTS escaneos          CASCADE;
 DROP TABLE IF EXISTS ubicacion_servicios CASCADE;
 DROP TABLE IF EXISTS codigos_qr        CASCADE;
@@ -69,6 +70,17 @@ CREATE TABLE ubicacion_servicios (
     PRIMARY KEY (ubicacion_id, servicio_id)
 );
 
+-- Usuarios del sistema (autenticación y permisos)
+CREATE TABLE usuarios (
+    id         SERIAL       PRIMARY KEY,
+    username   VARCHAR(80)  NOT NULL UNIQUE,
+    email      VARCHAR(150) NOT NULL UNIQUE,
+    password   VARCHAR(255) NOT NULL,          -- hash BCrypt
+    rol        VARCHAR(20)  NOT NULL DEFAULT 'USER',  -- 'ADMIN' | 'USER'
+    activo     BOOLEAN      NOT NULL DEFAULT TRUE,
+    creado_en  TIMESTAMP    NOT NULL DEFAULT NOW()
+);
+
 -- Historial de escaneos (opcional, desafío avanzado)
 CREATE TABLE escaneos (
     id           SERIAL      PRIMARY KEY,
@@ -86,6 +98,7 @@ CREATE INDEX idx_codigos_qr_ubicacion   ON codigos_qr(ubicacion_id);
 CREATE INDEX idx_ubicaciones_piso       ON ubicaciones(piso_id);
 CREATE INDEX idx_escaneos_qr            ON escaneos(qr_id);
 CREATE INDEX idx_escaneos_fecha         ON escaneos(escaneado_en);
+CREATE INDEX idx_usuarios_username      ON usuarios(username);
 
 
 -- ────────────────────────────────────────────────────────────

@@ -8,6 +8,7 @@ services:
         condition: service_healthy   # espera a que Postgres acepte conexiones
     environment:
       - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/qr_duoc
+      - JWT_SECRET=duoc-qr-secret-cambia-esto-en-produccion-1234567890
 
   api-ubicacion:
     build: ./api-ubicacion
